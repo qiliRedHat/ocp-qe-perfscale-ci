@@ -382,11 +382,6 @@ pipeline {
             oc get nodes
             oc label nodes --overwrite -l 'node-role.kubernetes.io/infra=' node-role.kubernetes.io/worker-
             oc label nodes --overwrite -l 'node-role.kubernetes.io/workload=' node-role.kubernetes.io/worker-
-            if [[ $(cat $WORKSPACE/flexy-artifacts/workdir/install-dir/metadata.json | grep vsphere -c) > 0 ]]; then
-              envsubst < monitoring-config-vsphere.yaml | oc apply -f -
-            else
-              envsubst < monitoring-config.yaml | oc apply -f -
-            fi
             oc patch -n openshift-ingress-operator ingresscontrollers.operator.openshift.io default -p '{"spec": {"nodePlacement": {"nodeSelector": {"matchLabels": {"node-role.kubernetes.io/infra": ""}}}}}' --type merge
             git clone --single-branch --depth 1 https://github.com/cloud-bulldozer/performance-dashboards.git
             pushd performance-dashboards/dittybopper
